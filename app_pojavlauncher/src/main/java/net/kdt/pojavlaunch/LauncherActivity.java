@@ -200,10 +200,10 @@ public class LauncherActivity extends BaseActivity {
 	private final View.OnClickListener mGithubButtonListener = v -> {
 		if (!isOnline(this))
 		{
-			
+			Toast.makeText(this, "No internet connection. Cannot check for updates.", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		Toast.makeText(this, "Checking for updates...", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Checking for Amethyst Microsoft-Less Edition updates...", Toast.LENGTH_SHORT).show();
 
 		// Run network check in the background to avoid freezing the app
 		java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
@@ -230,7 +230,7 @@ public class LauncherActivity extends BaseActivity {
 					if (isNewerVersion(Tools.CURRENT_MICROSOFTLESS_VERSION, latestTag)) {
 						new androidx.appcompat.app.AlertDialog.Builder(this)
 								.setTitle("Update Available")
-								.setMessage("New release " + latestTag + " is available! You are on " + Tools.CURRENT_MICROSOFTLESS_VERSION + ".")
+								.setMessage("New Microsoft-Less Edition release" + latestTag + " is available! You are on " + Tools.CURRENT_MICROSOFTLESS_VERSION + ".")
 								.setPositiveButton("Download", (d, w) -> 
 									Tools.openURL(this, "https://github.com/SteliosLL/Amethyst-Android-microsoft-less-edition/releases/latest")
 								)
