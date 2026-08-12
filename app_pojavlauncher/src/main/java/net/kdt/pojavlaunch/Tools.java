@@ -1820,28 +1820,31 @@ public final class Tools {
         if(info == null) return false;
         return (info.isConnected());
     }
-
-    public static boolean isDemoProfile(Context ctx){
-        MinecraftAccount currentProfile = PojavProfile.getCurrentProfileContent(ctx, null);
-        return currentProfile != null && currentProfile.isDemo();
-    }
-
     public static boolean isLocalProfile(Context ctx){
         MinecraftAccount currentProfile = PojavProfile.getCurrentProfileContent(ctx, null);
         return currentProfile == null || currentProfile.isLocal();
     }
+	
+	//----ONLINE ACC BYPASS MODIFICATIONS---
+	//MODIFY ONLY THESE FUNCTIONS THAT CHECK FOR ONLINE OR DEMO PROFILE TO ALWAYS RETURN THE CORRECT VALUE INSTEAD OF GOING AROUND THE CODE AND TRYING TO MAKE IT CLEAN AND SHI
+    public static boolean isDemoProfile(Context ctx){
+        //MinecraftAccount currentProfile = PojavProfile.getCurrentProfileContent(ctx, null);
+       // return currentProfile != null && currentProfile.isDemo();
+		return false;
+    }
     public static boolean hasOnlineProfile(){
         for (MinecraftAccount accountToCheck : getAllProfiles()) {
-            if (!accountToCheck.isLocal() && !accountToCheck.isDemo()) {
-                return true;
-            }
+			 return true;
+           // if (!accountToCheck.isLocal() && !accountToCheck.isDemo()) {
+               // return true;
+         //  }
         }
         return false;
     }
-
     public static void hasNoOnlineProfileDialog(Activity activity, @Nullable Runnable run, @Nullable String customTitle, @Nullable String customMessage){
-        if (hasOnlineProfile() && !Tools.isDemoProfile(activity)){
-            if (run != null) { // Demo profile handling should be using customTitle and customMessage
+        //if (hasOnlineProfile() && !Tools.isDemoProfile(activity)){
+		if (hasOnlineProfile()){
+            if (run != null) { 
                 run.run();
             }
         } else { // If there is no online profile, show a dialog
@@ -1850,6 +1853,8 @@ public final class Tools {
             dialogOnUiThread(activity, customTitle, customMessage);
         }
     }
+	
+	//-----------END OF ONLINE ACC BYPASS MODIFICATIONS--------
 
     // Some boilerplate to reduce boilerplate elsewhere
     public static void hasNoOnlineProfileDialog(Activity activity){
