@@ -1830,11 +1830,14 @@ public final class Tools {
         return currentProfile != null && currentProfile.isDemo();
     }
 	
-	//----ONLINE ACC BYPASS MODIFICATIONS----
-	//MODIFY ONLY THE FUNCTION THAT CHECKS FOR ONLINE PROFILE TO ALWAYS RETURN THE CORRECT VALUE INSTEAD OF GOING AROUND THE CODE AND TRYING TO MAKE IT CLEAN AND SHI
+	//----ONLINE ACC BYPASS MODIFICATION----
+	public static final String CURRENT_MICROSOFTLESS_VERSION = "v1.0.0"; //for the custom check update button in LauncherActivity.java
+	//NOTE FOR FUTURE SELF: This shi below was stripped and set to always return true. And the isLocal() function should be modified wherever its being called
     public static boolean hasOnlineProfile(){
         return true;
     }
+	
+	
     public static void hasNoOnlineProfileDialog(Activity activity, @Nullable Runnable run, @Nullable String customTitle, @Nullable String customMessage){
         if (hasOnlineProfile() && !Tools.isDemoProfile(activity)){
             if (run != null) { 
@@ -1846,8 +1849,6 @@ public final class Tools {
             dialogOnUiThread(activity, customTitle, customMessage);
         }
     }
-	//-----------END OF ONLINE ACC BYPASS MODIFICATIONS----------
-
 
     // Some boilerplate to reduce boilerplate elsewhere
     public static void hasNoOnlineProfileDialog(Activity activity){

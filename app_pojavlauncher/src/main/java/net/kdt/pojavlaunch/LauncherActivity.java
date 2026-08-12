@@ -129,6 +129,7 @@ public class LauncherActivity extends BaseActivity {
     private mcAccountSpinner mAccountSpinner;
     private FragmentContainerView mFragmentView;
     private ImageButton mSettingsButton;
+    private ImageButton mCheck4UpdatesButton;
     private ProgressLayout mProgressLayout;
     private ProgressServiceKeeper mProgressServiceKeeper;
     private ModloaderInstallTracker mInstallTracker;
@@ -140,6 +141,9 @@ public class LauncherActivity extends BaseActivity {
         public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
             mSettingsButton.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), f instanceof MainMenuFragment
                     ? R.drawable.ic_menu_settings : R.drawable.ic_menu_home));
+					
+					
+			mGithubButton.setVisibility(isMainMenu ? View.VISIBLE : View.GONE);		
         }
     };
 
@@ -169,6 +173,79 @@ public class LauncherActivity extends BaseActivity {
             Tools.backToMainMenu(this);
         }
     };
+	
+	private boolean isNewerVersion(String current, String latest) {
+		if (current == null || latest == null) return false;
+
+		// Strip leading 'v' or 'V'
+		String c = current.replaceAll("^[vV]", "").trim();
+		String l = latest.replaceAll("^[vV]", "").trim();
+
+		String[] cParts = c.split("\\.");
+		String[] lParts = l.split("\\.");
+
+		int length = Math.max(cParts.length, lParts.length);
+		for (int i = 0; i < length; i++) {
+			int cNum = i < cParts.length ? Integer.parseInt(cParts[i].replaceAll("[^0-9]", "")) : 0;
+			int lNum = i < lParts.length ? Integer.parseInt(lParts[i].replaceAll("[^0-9]", "")) : 0;
+
+			if (lNum > cNum) return true;  
+			if (cNum > lNum) return false; 
+		}
+    return false; 
+}
+	
+	
+	private final View.OnClickListener mGithubButtonListener = v -> {
+		if (!isOnline(this))
+		{
+			
+			return;
+		}
+		Toast.makeText(this, "Checking for updates...", Toast.LENGTH_SHORT).show();
+
+		// Run network check in the background to avoid freezing the app
+		java.util.concurrent.Executors.newSingleThreadExecutor().execute(() -> {
+			try {
+				java.net.URL url = new java.net.URL("https://api.github.com/repos/SteliosLL/Amethyst-Android-microsoft-less-edition/releases/latest");
+				java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				conn.setRequestProperty("Accept", "application/vnd.github.v3+json");
+
+				if (conn.getResponseCode() == 200) {
+					java.io.BufferedReader reader = new java.io.BufferedReader(
+							new java.io.InputStreamReader(conn.getInputStream()));
+					StringBuilder sb = new StringBuilder();
+					String line;
+					while ((line = reader.readLine()) != null) sb.append(line);
+					reader.close();
+
+					//xtract tag_name from github JSON response
+					org.json.JSONObject json = new org.json.JSONObject(sb.toString());
+					String latestTag = json.getString("tag_name");
+
+				// Inside your runOnUiThread block:
+				runOnUiThread(() -> {
+					if (isNewerVersion(Tools.CURRENT_MICROSOFTLESS_VERSION, latestTag)) {
+						new androidx.appcompat.app.AlertDialog.Builder(this)
+								.setTitle("Update Available")
+								.setMessage("New release " + latestTag + " is available! You are on " + Tools.CURRENT_MICROSOFTLESS_VERSION + ".")
+								.setPositiveButton("Download", (d, w) -> 
+									Tools.openURL(this, "https://github.com/SteliosLL/Amethyst-Android-microsoft-less-edition/releases/latest")
+								)
+								.setNegativeButton("Later", null)
+								.show();
+					} else {
+						Toast.makeText(this, "You are on the latest version! (" + Tools.CURRENT_MICROSOFTLESS_VERSION + ")", Toast.LENGTH_SHORT).show();
+					}
+				});
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				runOnUiThread(() -> Toast.makeText(this, "Failed to check for updates", Toast.LENGTH_SHORT).show());
+			}
+		});
+	};
 
     private final ExtraListener<Boolean> mLaunchGameListener = (key, value) -> {
         if(ProgressLayout.hasProcesses()){
@@ -223,7 +300,8 @@ public class LauncherActivity extends BaseActivity {
                 String jsonPath = LWJGL3ifyUtils.getJsonPath(LWJGL3ifyUtils.getProfileID(lwjgl3ifyJar));
                 File lwjgl3ifyClientJar = new File(jsonPath.replace(".json", ".jar"));
                 if (!lwjgl3ifyClientJar.exists()){
-                    if (mAccountSpinner.getSelectedAccount().isLocal() || !isOnline(this)){
+				  //if (mAccountSpinner.getSelectedAccount().isLocal() || !isOnline(this)){
+                    if (!isOnline(this)){ //ONLINE ACC BYPASS MODIFICATION
                         Tools.dialogOnUiThread(this, R.string.global_error, R.string.mc_download_failed);
                         return false;
                     }
@@ -332,6 +410,7 @@ public class LauncherActivity extends BaseActivity {
         ProgressKeeper.addTaskCountListener((mProgressServiceKeeper = new ProgressServiceKeeper(this)));
 
         mSettingsButton.setOnClickListener(mSettingButtonListener);
+		mCheck4UpdatesButton.setOnClickListener(mGithubButtonListener);
         ProgressKeeper.addTaskCountListener(mProgressLayout);
         ExtraCore.addExtraListener(ExtraConstants.BACK_PREFERENCE, mBackPreferenceListener);
         ExtraCore.addExtraListener(ExtraConstants.SELECT_AUTH_METHOD, mSelectAuthMethod);
@@ -486,6 +565,7 @@ public class LauncherActivity extends BaseActivity {
     private void bindViews(){
         mFragmentView = findViewById(R.id.container_fragment);
         mSettingsButton = findViewById(R.id.setting_button);
+		mGithubButton = findViewById(R.id.github_button);
         mAccountSpinner = findViewById(R.id.account_spinner);
         mProgressLayout = findViewById(R.id.progress_layout);
     }

@@ -86,7 +86,8 @@ public class MinecraftDownloader {
 
         sExecutorService.execute(() -> {
             try {
-                if(isLocalProfile || !isOnline) {
+                //if(isLocalProfile || !isOnline) {
+				if(!isOnline) { //ONLINE ACC BYPASS MODIFICATION
                     String versionMessage = realVersion; // Use provided version unless we find its a modded instance
 
                     // See if provided version is a modded version and if that version depends on another jar, check for presence of both jar's .json.
