@@ -38,7 +38,7 @@ For more details, check out our [wiki](https://wiki.angelauramc.dev)!
 * Modding via Forge and Fabric are also supported.
 * This repository contains source code for Android. For iOS/iPadOS, check out [Amethyst-iOS](https://github.com/AngelAuraMC/Amethyst-iOS).
 
-## Getting Amethyst
+## Getting Amethyst Microsoft-Less Edition
 
 You can get Amethyst via two methods:
 
@@ -51,7 +51,7 @@ You can get Amethyst via two methods:
 
 The easiest way to build Amethyst is to use the pre-built JREs provided by our CI.
 
-1. Clone the repository: `git clone --recursive https://github.com/AngelAuraMC/Amethyst-Android.git`
+1. Clone the repository: `git clone --recursive https://github.com/SteliosLL/Amethyst-Android-microsoft-less-edition.git`
 2. Build the launcher: `./gradlew :app_pojavlauncher:assembleDebug` (Use `gradlew.bat` on Windows)
 
 The built APK will be located in `app_pojavlauncher/build/outputs/apk/debug/`.
