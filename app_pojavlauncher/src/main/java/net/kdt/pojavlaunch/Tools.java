@@ -1825,25 +1825,18 @@ public final class Tools {
         return currentProfile == null || currentProfile.isLocal();
     }
 	
-	//----ONLINE ACC BYPASS MODIFICATIONS---
-	//MODIFY ONLY THESE FUNCTIONS THAT CHECK FOR ONLINE OR DEMO PROFILE TO ALWAYS RETURN THE CORRECT VALUE INSTEAD OF GOING AROUND THE CODE AND TRYING TO MAKE IT CLEAN AND SHI
     public static boolean isDemoProfile(Context ctx){
-        //MinecraftAccount currentProfile = PojavProfile.getCurrentProfileContent(ctx, null);
-       // return currentProfile != null && currentProfile.isDemo();
-		return false;
+        MinecraftAccount currentProfile = PojavProfile.getCurrentProfileContent(ctx, null);
+        return currentProfile != null && currentProfile.isDemo();
     }
+	
+	//----ONLINE ACC BYPASS MODIFICATIONS----
+	//MODIFY ONLY THE FUNCTION THAT CHECKS FOR ONLINE PROFILE TO ALWAYS RETURN THE CORRECT VALUE INSTEAD OF GOING AROUND THE CODE AND TRYING TO MAKE IT CLEAN AND SHI
     public static boolean hasOnlineProfile(){
-        for (MinecraftAccount accountToCheck : getAllProfiles()) {
-			 return true;
-           // if (!accountToCheck.isLocal() && !accountToCheck.isDemo()) {
-               // return true;
-         //  }
-        }
-        return false;
+        return true;
     }
     public static void hasNoOnlineProfileDialog(Activity activity, @Nullable Runnable run, @Nullable String customTitle, @Nullable String customMessage){
-        //if (hasOnlineProfile() && !Tools.isDemoProfile(activity)){
-		if (hasOnlineProfile()){
+        if (hasOnlineProfile() && !Tools.isDemoProfile(activity)){
             if (run != null) { 
                 run.run();
             }
@@ -1853,8 +1846,8 @@ public final class Tools {
             dialogOnUiThread(activity, customTitle, customMessage);
         }
     }
-	
-	//-----------END OF ONLINE ACC BYPASS MODIFICATIONS--------
+	//-----------END OF ONLINE ACC BYPASS MODIFICATIONS----------
+
 
     // Some boilerplate to reduce boilerplate elsewhere
     public static void hasNoOnlineProfileDialog(Activity activity){
