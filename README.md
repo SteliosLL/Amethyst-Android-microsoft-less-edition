@@ -1,5 +1,7 @@
 <h1 align="center">Angel Aura Amethyst</h1>
 
+**NOTE: This fork solely exists to BYPASS the Microsoft account requirement. You can play with a local account without having to connect an online Microsoft account**
+
 <img src="https://github.com/AngelAuraMC/Amethyst-Android/blob/v3_openjdk/app_pojavlauncher/src/main/assets/amethyst.png" align="left" width="130" height="130" alt="Amethyst logo">
 
 [![Android CI](https://github.com/AngelAuraMC/Amethyst-Android/workflows/Android%20CI/badge.svg)](https://github.com/AngelAuraMC/Amethyst-Android/actions)
