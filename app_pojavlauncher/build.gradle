@@ -180,6 +180,8 @@ android {
     packagingOptions {
         jniLibs {
             useLegacyPackaging = true
+            // If you're debugging mesa libs, put them here, android will strip them
+            // and not properly link to source files, very smart android studio.
             keepDebugSymbols += ['**/libcutils.so']
             pickFirsts += ['**/libbytehook.so']
         }
@@ -199,7 +201,7 @@ afterEvaluate {
     def componentJars = [
             ":forge_installer:jar",
             ":arc_dns_injector:jar",
-            ":methods_injector_agent:jar",
+            ":MioLibPatcher:jar",
             ":jre_lwjgl3glfw:jar"
     ]
 
@@ -239,7 +241,7 @@ dependencies {
     // Our version of exp4j can be built from source at
     // https://github.com/PojavLauncherTeam/exp4j
     implementation 'net.sourceforge.htmlcleaner:htmlcleaner:2.6.1'
-    implementation 'com.bytedance:bytehook:1.1.2'
+    implementation 'com.bytedance:bytehook:1.0.10'
 
     // implementation 'net.sourceforge.streamsupport:streamsupport-cfuture:1.7.0'
 
@@ -248,6 +250,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 
     implementation "net.java.dev.jna:jna:5.14.0@aar"
+
+    implementation project(":androidnsbypass")
 
 }
 apply from: rootProject.file('gradle/prefab_bypass.gradle')
